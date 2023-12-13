@@ -6,13 +6,20 @@
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import ReqMbDetail from './ReqMbDetail.svelte';
 	import { searchMbList } from '$lib/api/store';
+	import { addCommas } from '$lib/config';
+	import { onMount } from 'svelte';
 	const toastStore = getToastStore();
 	let mbsList: any[] = [];
-	const getMbsList = async () => {
-		const data = await accessApi('member/getMbsList');
+	let nextMbsList: any[] = [];
+	const getMbsList = async (start: number, limit: number) => {
+		const params = {
+			start,
+			limit
+		};
+		const data = await accessApi('member/getMbsList', params);
 		mbsList = data;
 	};
-	getMbsList();
+	getMbsList(1, 15);
 	let reqMbItemlist: any[] = [];
 	const reqMbItemList = async () => {
 		const data = await accessApi('eetimes/reqMbItemList');
@@ -28,11 +35,29 @@
 	};
 	reqMbItemList();
 	searchMbList.set([]);
+	let totalCnt: number;
+	const getTotalCnt = async () => {
+		const data = await accessApi('member/getTotalCnt');
+		totalCnt = data.totalCnt;
+	};
+	getTotalCnt();
+	let nextPaging: HTMLDivElement;
+
+	onMount(() => {
+		const observer = new IntersectionObserver(() => {
+			const start = mbsList.length + 1;
+			if (start > totalCnt) return;
+			getMbsList(start, 15);
+		});
+		observer.observe(nextPaging);
+	});
+	$: mbsList = [...mbsList, ...nextMbsList];
 </script>
 
 {#if $searchMbList.length > 0}
 	<div class="mb-6" transition:slide>
-		<IconXi iconName="search" /> <small class="text-surface-300">검색명단:</small>
+		<IconXi iconName="search" />
+		<small class="text-surface-300">검색명단: ({$searchMbList.length})</small>
 		{#each $searchMbList as mb}
 			<div class="mb-2 variant-ghost-primary mbs-box">
 				<h3 class="p-2 variant-ghost-secondary ps-4">
@@ -58,14 +83,16 @@
 <div in:scale={{ duration: 150 }}>
 	{#if reqMbItemlist.length > 0}
 		<div class="mb-6">
-			<IconXi iconName="check-circle-o" /> <small class="text-surface-300">신청대기:</small>
+			<IconXi iconName="check-circle-o" />
+			<small class="text-surface-300">신청대기: ({reqMbItemlist.length})</small>
 			{#each reqMbItemlist as req}
 				<ReqMbDetail {req} />
 			{/each}
 		</div>
 	{/if}
 	{#if mbsList}
-		<IconXi iconName="user-circle" /> <small class="text-surface-300">회원명단:</small>
+		<IconXi iconName="user-circle" />
+		<small class="text-surface-300">회원명단: ({totalCnt ? addCommas(totalCnt) : ''})</small>
 		{#each mbsList as _mb}
 			<div class="pb-1 mb-3 variant-ghost mbs-box">
 				<h3 class="p-2 variant-ghost-secondary ps-4">
@@ -85,6 +112,7 @@
 				<MbItemsList mbId={_mb.mb_id} />
 			</div>
 		{/each}
+		<div bind:this={nextPaging} />
 	{/if}
 </div>
 

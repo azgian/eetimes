@@ -22,7 +22,7 @@ export const accessApi = async (accessUrl: string, obj: object={}, method='POST'
             ...obj
         })
     };
-    // if (dev) console.log('api root params:: ', params);
+    // console.log('api root params:: ', params);
     const res = await fetch(API_ENDPOINT + accessUrl, params);
     const { data } = await res.json();
     if (data.msg === 'x!') {
