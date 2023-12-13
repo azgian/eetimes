@@ -1,0 +1,54 @@
+[debug] [2023-12-13T00:49:10.300Z] ----------------------------------------------------------------------
+[debug] [2023-12-13T00:49:10.301Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\azgia\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting:eetimes1
+[debug] [2023-12-13T00:49:10.302Z] CLI Version:   13.0.1
+[debug] [2023-12-13T00:49:10.302Z] Platform:      win32
+[debug] [2023-12-13T00:49:10.302Z] Node Version:  v20.10.0
+[debug] [2023-12-13T00:49:10.302Z] Time:          Wed Dec 13 2023 09:49:10 GMT+0900 (대한민국 표준시)
+[debug] [2023-12-13T00:49:10.302Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2023-12-13T00:49:10.399Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2023-12-13T00:49:10.399Z] > authorizing via signed-in user (azgian@gmail.com)
+[debug] [2023-12-13T00:49:10.400Z] [iam] checking project jkgjkhg-bb6f8 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2023-12-13T00:49:10.401Z] > refreshing access token with scopes: []
+[debug] [2023-12-13T00:49:10.403Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2023-12-13T00:49:10.403Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-12-13T00:49:10.663Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2023-12-13T00:49:10.663Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2023-12-13T00:49:10.686Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/jkgjkhg-bb6f8:testIamPermissions [none]
+[debug] [2023-12-13T00:49:10.686Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/jkgjkhg-bb6f8:testIamPermissions x-goog-quota-user=projects/jkgjkhg-bb6f8
+[debug] [2023-12-13T00:49:10.686Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/jkgjkhg-bb6f8:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-12-13T00:49:10.993Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/jkgjkhg-bb6f8:testIamPermissions 200
+[debug] [2023-12-13T00:49:10.993Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/jkgjkhg-bb6f8:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2023-12-13T00:49:10.994Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/jkgjkhg-bb6f8 [none]
+[debug] [2023-12-13T00:49:11.680Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/jkgjkhg-bb6f8 200
+[debug] [2023-12-13T00:49:11.680Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/jkgjkhg-bb6f8 {"projectId":"jkgjkhg-bb6f8","projectNumber":"410103444778","displayName":"Pip Maker-test","name":"projects/jkgjkhg-bb6f8","resources":{"hostingSite":"jkgjkhg-bb6f8","storageBucket":"jkgjkhg-bb6f8.appspot.com","locationId":"asia-east1"},"state":"ACTIVE","etag":"1_527544f8-d867-4b25-815d-b2dde2a46cd7"}
+[debug] [2023-12-13T00:49:14.398Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/jkgjkhg-bb6f8/sites pageToken=&pageSize=10
+[debug] [2023-12-13T00:49:15.144Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/jkgjkhg-bb6f8/sites 200
+[debug] [2023-12-13T00:49:15.144Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/jkgjkhg-bb6f8/sites {"sites":[{"name":"projects/jkgjkhg-bb6f8/sites/eetimes1","defaultUrl":"https://eetimes1.web.app","appId":"1:410103444778:web:0e7a30031e0f38528e9a53","type":"USER_SITE"},{"name":"projects/jkgjkhg-bb6f8/sites/jkgjkhg-bb6f8","defaultUrl":"https://jkgjkhg-bb6f8.web.app","appId":"1:410103444778:web:22e40eb663ceca4e8e9a53","type":"DEFAULT_SITE"}]}
+[debug] [2023-12-13T00:49:15.145Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:410103444778:web:0e7a30031e0f38528e9a53/config [none]
+[debug] [2023-12-13T00:49:16.081Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:410103444778:web:0e7a30031e0f38528e9a53/config 200
+[debug] [2023-12-13T00:49:16.081Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/webApps/1:410103444778:web:0e7a30031e0f38528e9a53/config {"projectId":"jkgjkhg-bb6f8","appId":"1:410103444778:web:0e7a30031e0f38528e9a53","storageBucket":"jkgjkhg-bb6f8.appspot.com","locationId":"asia-east1","apiKey":"AIzaSyDhgTYu85km9aAIDoGRUrPJqvXJh3s4tOU","authDomain":"jkgjkhg-bb6f8.firebaseapp.com","messagingSenderId":"410103444778"}
+[info] 
+   Thank you for trying our experimental support for SvelteKit on Firebase Hosting.
+   While this integration is maintained by Googlers it is not a supported Firebase product.
+   Issues filed on GitHub will be addressed on a best-effort basis by maintainers and other community members.
+
+   Documentation: https://firebase.google.com/docs/hosting/frameworks/frameworks-overview
+   File a bug: https://github.com/firebase/firebase-tools/issues/new?template=bug_report.md
+   Submit a feature request: https://github.com/firebase/firebase-tools/issues/new?template=feature_request.md
+
+   We'd love to learn from you. Express your interest in helping us shape the future of Firebase Hosting: https://goo.gle/41enW5X
+
+[debug] [2023-12-13T00:49:23.076Z] Error: EPERM: operation not permitted, stat 'C:\Users\azgia\OneDrive\바탕 화면\eetimes2\.svelte-kit\types\src\routes\$types.d.ts'
+    at Object.statSync (node:fs:1676:25)
+    at file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/@sveltejs/kit/src/core/sync/write_types/index.js:95:22
+    at Array.map (<anonymous>)
+    at write_all_types (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/@sveltejs/kit/src/core/sync/write_types/index.js:94:27)
+    at create (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/@sveltejs/kit/src/core/sync/sync.js:32:8)
+    at Module.all (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/@sveltejs/kit/src/core/sync/sync.js:58:15)
+    at config (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/@sveltejs/kit/src/exports/vite/index.js:298:34)
+    at runConfigHook (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/vite/dist/node/chunks/dep-68d1a114.js:66366:31)
+    at async resolveConfig (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/vite/dist/node/chunks/dep-68d1a114.js:65807:14)
+    at async Module.build (file:///C:/Users/azgia/OneDrive/%EB%B0%94%ED%83%95%20%ED%99%94%EB%A9%B4/eetimes2/node_modules/vite/dist/node/chunks/dep-68d1a114.js:47926:20)
+[error] 
+[error] Error: An unexpected error has occurred.
