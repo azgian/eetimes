@@ -6,7 +6,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import { scale } from 'svelte/transition';
 	import { accessApi, resetMb } from '$lib/api/access';
-	import { itemArray, getEmailMatch } from '$lib/config';
+	import { getEmailMatch } from '$lib/config';
 	import ItemBox from './ItemBox.svelte';
 	let mbName = $mb ? $mb.mb_name : '';
 	let mbHp = $mb ? $mb.mb_hp : '';
@@ -17,7 +17,7 @@
 	let mbBank2 = bankInfo[2];
 	let mbPassword = '';
 	const setMbInfo = async (fld: keyof Mb, val: any) => {
-		if (!val || !(mbBank0 && mbBank1 && mbBank2)) {
+		if (!val) {
 			const t: ToastSettings = {
 				message: '회원정보가 입력되지 않았습니다.',
 				timeout: 1500
