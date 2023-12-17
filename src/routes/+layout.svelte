@@ -17,7 +17,8 @@
 			!$isLoggedIn &&
 			$page.route.id !== '/login' &&
 			$page.route.id !== '/guide' &&
-			$page.route.id !== '/guide/termsOfUse'
+			$page.route.id !== '/guide/termsOfUse' &&
+			$page.route.id !== '/api'
 		)
 			goto('/login');
 		else if ($isLoggedIn && $page.route.id === '/login') goto('/');

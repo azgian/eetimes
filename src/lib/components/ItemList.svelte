@@ -2,33 +2,34 @@
 	import { getItemPrice } from '$lib/config';
 	import { accessApi } from '$lib/api/access';
 	import Button from '$lib/components/Button.svelte';
-	import { onMount } from 'svelte';
 	import ItemListDetail from './itemListDetail.svelte';
 	import { scale, slide } from 'svelte/transition';
 	export let itemId: number;
 	let showDetail = false;
 	let itemInfo: any = {};
+	let itemPrice: number;
 	const getItemInfo = async () => {
 		const params = {
 			itemId
 		};
 		const data = await accessApi('eetimes/getItemInfo', params);
 		itemInfo = data;
+		itemPrice = await getItemPrice(itemInfo.it_name);
 	};
-	let itemPrice: number;
-	onMount(async () => {
-		getItemInfo();
-		itemPrice = await getItemPrice(itemInfo.item_name);
-	});
+	getItemInfo();
 </script>
 
 {#if itemInfo}
 	<div class="mb-4 variant-ghost itemWrap">
 		<div class="flex items-center justify-between p-3 itemBox">
 			{#if itemInfo.it_name}
-			<div>
-				<img src="./images/coin_{itemInfo.it_name.toLowerCase()}.jpg" alt="logo" class="coin_logo" />
-			</div>
+				<div>
+					<img
+						src="./images/coin_{itemInfo.it_name.toLowerCase()}.jpg"
+						alt="logo"
+						class="coin_logo"
+					/>
+				</div>
 			{/if}
 			<div class="text-center infoBox grow">
 				<span class="text-primary-300"
@@ -53,7 +54,6 @@
 				/>
 			</div>
 		</div>
-
 		{#if showDetail}
 			<div in:scale={{ duration: 150 }} out:slide={{ duration: 150 }}>
 				<ItemListDetail {itemInfo} {itemPrice} />

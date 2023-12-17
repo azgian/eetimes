@@ -5,9 +5,10 @@
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { accessApi } from '$lib/api/access';
-	import { isLoggedIn, mb } from '$lib/api/store';
+	import { mb } from '$lib/api/store';
 	const toastStore = getToastStore();
 	export let itemInfo: any = {};
+	let itemName = itemInfo.it_name;
 	export let itemPrice: number;
 	const setCopy = (text: string) => {
 		getCopyText(text);
@@ -17,7 +18,50 @@
 		};
 		toastStore.trigger(t);
 	};
-	let itemName = itemInfo.it_name;
+	let showReqForm = false;
+	let reqAmount: number;
+	let amountRate: number;
+	let _reqAmount: number;
+	let _amountRate: number;
+	const getRate = () => {
+		if (!reqAmount) {
+			const t: ToastSettings = {
+				message: '금액을 입력해주세요.',
+				timeout: 3000
+			};
+			toastStore.trigger(t);
+			return false;
+		}
+		let minAmount = itemName === 'KRW' ? 500_000 : 400;
+		let coinName = itemName === 'KRW' ? '원' : 'USDT';
+		if (reqAmount < minAmount) {
+			const t: ToastSettings = {
+				message: `${addCommas(minAmount)} ${coinName} 이상부터 신청가능합니다.`,
+				timeout: 3000
+			};
+			toastStore.trigger(t);
+			showReqForm = false;
+			return false;
+		}
+		if (itemName === 'KRW') {
+			if (reqAmount >= 500_000 && reqAmount < 1_000_000) amountRate = 4;
+			else {
+				let n = Math.floor(reqAmount / 1_000_000);
+				amountRate = 4 + n * 0.1;
+			}
+		} else {
+			///itemName === 'USDT' || itemName === 'NETELLER'
+			if (reqAmount >= 400 && reqAmount < 800) amountRate = 4.1;
+			else {
+				let n = Math.floor(reqAmount / 800);
+				amountRate = 4.1 + n * 0.1;
+			}
+		}
+		_reqAmount = reqAmount;
+		_amountRate = amountRate;
+		showReqForm = true;
+	};
+
 	let btnDisabledReq = false;
 	let showGsReq = false;
 	const reqBuy = async () => {
@@ -31,11 +75,12 @@
 		}
 		if (!confirm('신청하시겠습니까?')) return;
 		const params = {
-			itemName
+			itemName,
+			reqAmount,
+			amountRate
 		};
 		btnDisabledReq = showGsReq = true;
 		const data = await accessApi('eetimes/reqBuy', params);
-		// if (dev) console.log('data: ', data);
 		if (data.msg === 'success') {
 			const t: ToastSettings = {
 				message: '신청되었습니다.',
@@ -56,81 +101,106 @@
 	</div>
 {/if}
 
-<div class="p-3 mt-3 table-container">
-	<table class="table table-compact table-interactive">
-		<tbody>
-			<tr>
-				<td>월환산 보상율</td>
-				<td>보상주기</td>
-			</tr>
-			<tr class="text-primary-300">
-				<td
-					><strong>{itemInfo.it_rate ? Math.round(itemInfo.it_rate * 30 * 100) / 100 : ''} %</strong
-					></td
-				>
-				<td><strong>매일</strong></td>
-			</tr>
-		</tbody>
-	</table>
-</div>
-<div class="flex justify-between px-3 mt-3">
-	<div>
-		{#if itemInfo.it_wallet}
-			<Button
-				addClass="variant-filled-primary btn-sm mt-1"
-				btnText={itemInfo.it_wallet ? 'Wallet' : '지갑주소 없음'}
-				iconNameS="documents-o"
-				btnDisabled={itemInfo.it_wallet ? false : true}
-				onClick={() => setCopy(itemInfo.it_wallet)}
-			/>
-		{/if}
-		{#if itemInfo.bank}
-			<Button
-				addClass="variant-filled-primary btn-sm mt-1"
-				btnText={itemInfo.bank ? '계좌번호 복사' : '은행계좌정보없음'}
-				iconNameS="documents-o"
-				btnDisabled={itemInfo.bank ? false : true}
-				onClick={() => setCopy(itemInfo.bank.replace(/\D/g, ''))}
-			/><br />
-			<small class="text-surface-300"><IconXi iconName="bank"></IconXi> {itemInfo.bank}</small>
-		{/if}
-	</div>
-	<div>
-		<form>
-			<Button
-				btnType="submit"
-				addClass="variant-filled-secondary"
-				btnText="신청"
-				onClick={reqBuy}
-				btnDisabled={btnDisabledReq}
-				showGs={showGsReq}
-			/>
-		</form>
+<div class="p-3">
+	<div class="input-group input-group-divider grid-cols-12">
+		<input
+			type="number"
+			placeholder="금액 ({itemName})"
+			class="col-span-7"
+			bind:value={reqAmount}
+			on:keyup={() => {
+				_reqAmount = _amountRate = 0;
+			}}
+		/>
+		<Button
+			btnType="button"
+			addClass="variant-ghost-secondary col-span-5"
+			btnText="보상율 확인"
+			onClick={getRate}
+		/>
 	</div>
 </div>
-<div class="flex flex-col p-5 text-surface-300">
-	<small>
-		<IconXi iconName="info" /> 참여자들이 실제로 분배 받은 보상율은 향후 변동될 수 있습니다.
-	</small>
-	{#if itemInfo._it_name === 'USDT'}
+{#if showReqForm}
+	<div class="p-3 mt-3 table-container">
+		<table class="table table-compact table-interactive">
+			<tbody>
+				<tr>
+					<td>금액</td>
+					<td>월수익(30일 기준)</td>
+				</tr>
+				<tr class="text-primary-300">
+					<td><strong>{addCommas(_reqAmount)} {itemName}</strong></td>
+					<td>
+						<strong>{Math.round(_amountRate * 10) / 10} %</strong>
+						<br /><span
+							>≒ {addCommas((_reqAmount * Math.round(_amountRate * 10)) / 10 / 100)}
+							{itemName}</span
+						>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="flex justify-between px-3 mt-3">
+		<div>
+			{#if itemInfo.it_wallet}
+				<Button
+					addClass="variant-filled-primary btn-sm mt-1"
+					btnText={itemInfo.it_wallet ? 'Wallet' : '지갑주소 없음'}
+					iconNameS="documents-o"
+					btnDisabled={itemInfo.it_wallet ? false : true}
+					onClick={() => setCopy(itemInfo.it_wallet)}
+				/>
+			{/if}
+			{#if itemInfo.bank}
+				<Button
+					addClass="variant-filled-primary btn-sm mt-1"
+					btnText={itemInfo.bank ? '계좌번호 복사' : '은행계좌정보없음'}
+					iconNameS="documents-o"
+					btnDisabled={itemInfo.bank ? false : true}
+					onClick={() => setCopy(itemInfo.bank.replace(/\D/g, ''))}
+				/><br />
+				<small class="text-surface-300"><IconXi iconName="bank"></IconXi> {itemInfo.bank}</small>
+			{/if}
+		</div>
+		<div>
+			<form>
+				<Button
+					btnType="submit"
+					addClass="variant-filled-secondary"
+					btnText="신청"
+					onClick={reqBuy}
+					btnDisabled={btnDisabledReq}
+					showGs={showGsReq}
+				/>
+			</form>
+		</div>
+	</div>
+	<div class="flex flex-col p-5 text-surface-300">
 		<small>
-			<IconXi iconName="info" /> 지갑주소를 복사하여 코인을 전송한 후, 신청하시면 관리자가 확인후 처리해
-			드립니다.
+			<IconXi iconName="info" /> 참여자들이 실제로 분배 받은 보상율은 향후 변동될 수 있습니다.
 		</small>
-		<small>
-			<IconXi iconName="info" /> 송금 수수료(1USDT)는 본인 부담입니다.
-		</small>
-	{/if}
-	{#if itemInfo._it_name === 'KRW'}
-		<small>
-			<IconXi iconName="info" /> 계좌번호를 복사하여 이체한 후, 신청하시면 관리자가 확인후 처리해 드립니다.
-		</small>
-	{/if}
-</div>
+		{#if itemInfo.it_name === 'USDT'}
+			<small>
+				<IconXi iconName="info" /> 지갑주소를 복사하여 코인을 전송한 후, 신청하시면 관리자가 확인후 처리해
+				드립니다.
+			</small>
+			<small>
+				<IconXi iconName="info" /> 송금 수수료(1USDT)는 본인 부담입니다.
+			</small>
+		{/if}
+		{#if itemInfo.it_name === 'KRW'}
+			<small>
+				<IconXi iconName="info" /> 계좌번호를 복사하여 이체한 후, 신청하시면 관리자가 확인후 처리해 드립니다.
+			</small>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	td {
 		text-align: center;
+		vertical-align: middle;
 	}
 	.text-price {
 		font-size: 1.75rem;

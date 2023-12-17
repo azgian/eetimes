@@ -44,22 +44,25 @@
 			</tr>
 			<tr>
 				<th>보상율</th>
-				<td>{@html mbItem.rate ? mbItem.rate * 1 + ' <small>% / Daily</small>' : ''}</td>
+				<td>{@html mbItem.rate ? mbItem.rate * 1 + ' <small>% / 월수익(30일 기준)</small>' : ''}</td
+				>
 			</tr>
 			<tr>
 				<th>스테이킹<br />수량</th>
 				<td class="text-primary-300">
 					{@html mbItem.amount
 						? '<strong>' +
-						  addCommas(mbItem.amount) +
-						  '</strong> <small class="text-surface-100">' +
-						  mbItem.item_name +
-						  '</small>'
+							addCommas(mbItem.amount) +
+							'</strong> <small class="text-surface-100">' +
+							mbItem.item_name +
+							'</small>'
 						: ''}
-					<strong class="ms-2 text-success-300"
-						>(<IconXi iconName="won" fontSize="0.8rem" />
-						{addCommas(Math.round(currPrice * mbItem.amount))})</strong
-					>
+					{#if mbItem.item_name !== 'KRW'}
+						<span class="ms-2 text-success-300">
+							(<IconXi iconName="won" fontSize="0.8rem" />
+							<strong>{addCommas(Math.round(mbItem.amount * currPrice))}</strong>)
+						</span>
+					{/if}
 				</td>
 			</tr>
 			<tr>
@@ -68,12 +71,12 @@
 					{diffInDays ? diffInDays : '0'}일째<br />
 					{@html accumItem
 						? '<strong>' +
-						  addCommas(Math.round(accumItem * 100) / 100) +
-						  '</strong> <small class="text-surface-100">' +
-						  mbItem.item_name +
-						  '</small>'
+							addCommas(Math.round(accumItem * 100) / 100) +
+							'</strong> <small class="text-surface-100">' +
+							mbItem.item_name +
+							'</small>'
 						: '0'}
-					{#if accumReward}
+					{#if accumReward && mbItem.item_name !== 'KRW'}
 						<span class="ms-2 text-success-300">
 							(<IconXi iconName="won" fontSize="0.8rem" />
 							<strong>{addCommas(accumReward)}</strong>)

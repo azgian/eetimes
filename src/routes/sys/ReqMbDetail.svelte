@@ -4,6 +4,7 @@
 	import IconXi from '$lib/components/IconXi.svelte';
 	import { scale, slide } from 'svelte/transition';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { addCommas } from '$lib/config';
 	const toastStore = getToastStore();
 	export let req: any = {};
 	let showDetail = false;
@@ -11,14 +12,12 @@
 	let reqMbId = req.mb_id;
 	let reqItemName = req.item_name;
 	let reqStartDay: Date = new Date();
-	let reqAmount: number;
 	let reqPeriod: number;
-	let reqRate: number;
 	let btnDisabledSetItem = false;
 	let showGsSetItem = false;
 	let showReqBox = true;
 	const setReqMbItem = async () => {
-		if (!reqStartDay || !reqAmount || !reqPeriod || !reqRate) {
+		if (!reqStartDay || !reqPeriod) {
 			const t: ToastSettings = {
 				message: `모든 항목은 필수입력입니다.`,
 				timeout: 3000
@@ -31,9 +30,7 @@
 			reqMbId,
 			reqItemName,
 			reqStartDay,
-			reqAmount,
-			reqPeriod,
-			reqRate
+			reqPeriod
 		};
 		btnDisabledSetItem = showGsSetItem = true;
 		const data = await accessApi('eetimes/setReqMbItem', params);
@@ -100,9 +97,9 @@
 					{#if req.item_name}
 						<div class="flex mb-2 ms-1">
 							<img src="./images/{req.coin_logo}" alt="logo" class="coin_logo" />
-							<strong class="text-primary-300 ms-3">{req.it_rate} %</strong>
+							<strong class="text-primary-300 ms-3">금액: {addCommas(req.amount)}</strong>
 							<span class="text-surface-400 ms-2">/</span>
-							<strong class="text-success-300 ms-2">{req.it_period} 일</strong>
+							<strong class="text-success-300 ms-2">보상율: {req.rate * 1} %</strong>
 						</div>
 					{/if}
 					<input type="hidden" bind:value={reqId} />
@@ -116,24 +113,10 @@
 					/>
 					<div class="grid-cols-12 mb-2 input-group input-warning input-group-divider">
 						<input
-							class="col-span-6 input-warning"
-							type="number"
-							placeholder="보상율 (1day)"
-							bind:value={reqRate}
-						/>
-						<input
-							class="col-span-6 input-warning"
+							class="col-span-7 input-warning"
 							type="number"
 							placeholder="기간"
 							bind:value={reqPeriod}
-						/>
-					</div>
-					<div class="grid-cols-12 mb-2 input-group input-warning input-group-divider">
-						<input
-							class="col-span-7 input-warning"
-							type="number"
-							placeholder="수량"
-							bind:value={reqAmount}
 						/>
 						<Button
 							btnType="submit"

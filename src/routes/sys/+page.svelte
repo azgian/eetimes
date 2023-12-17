@@ -20,11 +20,11 @@
 		mbsList = data;
 	};
 	getMbsList(1, 15);
-	let reqMbItemlist: any[] = [];
+	let reqMbList: any[] = [];
 	const reqMbItemList = async () => {
 		const data = await accessApi('eetimes/reqMbItemList');
 		// if (dev) console.log('reqMbItemList data: ', data);
-		reqMbItemlist = data;
+		reqMbList = data;
 		if (data.msg === 'success') {
 			const t: ToastSettings = {
 				message: '신청되었습니다.',
@@ -81,11 +81,11 @@
 {/if}
 
 <div in:scale={{ duration: 150 }}>
-	{#if reqMbItemlist.length > 0}
+	{#if reqMbList.length > 0}
 		<div class="mb-6">
 			<IconXi iconName="check-circle-o" />
-			<small class="text-surface-300">신청대기: ({reqMbItemlist.length})</small>
-			{#each reqMbItemlist as req}
+			<small class="text-surface-300">신청대기: ({reqMbList.length})</small>
+			{#each reqMbList as req}
 				<ReqMbDetail {req} />
 			{/each}
 		</div>

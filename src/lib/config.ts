@@ -95,7 +95,7 @@ export const getBnbPrice = async () => {
 }
 
 export const getItemPrice = async (itemName: string) => {
-	if (itemName === 'USDT')
+	if (itemName === 'USDT'||itemName === 'NETELLER')
 		return getUsdtPrice();
 	else if (itemName === 'BNB')
 		return getBnbPrice();
