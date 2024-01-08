@@ -35,8 +35,10 @@
 	};
 	const setLogout = (): void => {
 		clearInterval(logoutTimer);
-		isLoggedIn.set(false);
-		goto('/login');
+		sessionStorage.setItem('ssMb', '');
+		location.href = '/';
+		// isLoggedIn.set(false);
+		// goto('/login');
 	};
 	const callLogout = (): void => {
 		const t: ToastSettings = {

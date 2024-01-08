@@ -8,7 +8,7 @@
 	export let baseUrl: string;
 </script>
 
-<div id="tabMenuBox" in:scale={{ duration: 150 }}>
+<div id="tabMenuBox" in:scale={{ duration: 150 }} class="flex justify-center">
 	<div class="tabMenuBox btn-group variant-ringed">
 		{#each tabsArr as tab}
 			{@const isBaseUrl = $page.url.pathname === '/' + baseUrl ? baseUrl + '/' : ''}

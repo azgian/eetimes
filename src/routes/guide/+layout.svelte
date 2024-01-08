@@ -9,11 +9,10 @@
 		{ link: baseUrl, name: '개인정보처리방침', mbLv: 0 },
 		{ link: 'termsOfUse', name: '이용약관', mbLv: 0 }
 	];
-	let gotoUrl = $isLoggedIn ? '/' : '/login';
 </script>
 
 <div id="logo-box" class="flex justify-center">
-	<a href={gotoUrl}>
+	<a href="/">
 		<img src="/images/logo.png" alt="logo" />
 	</a>
 </div>
@@ -27,7 +26,7 @@
 	<TabMenuBox {tabsArr} {baseUrl} currUrl={$page.params.slug} />
 </div>
 <div class="text-center text-surface-500 home">
-	<a href={gotoUrl}><IconXi iconName="home" fontSize="2.5rem" /></a>
+	<a href="/"><IconXi iconName="home" fontSize="2.5rem" /></a>
 </div>
 
 <style>

@@ -11,7 +11,9 @@
 		const data = await accessApi('eetimes/getMbItemsList', params);
 		mbItemsList = data;
 	};
-	getMbItemsList();
+	$: if ($mb?.mb_id) {
+		getMbItemsList();
+	}
 </script>
 
 <div in:scale={{ duration: 150 }}>

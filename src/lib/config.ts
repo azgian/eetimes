@@ -1,7 +1,23 @@
 import { goto } from '$app/navigation';
-import { isLoggedIn } from '$lib/api/store';
+import { mb,isLoggedIn, type Mb } from '$lib/api/store';
+import { onMount } from 'svelte';
+import { accessApi } from './api/access';
 export const siteDomain = '';
 export const siteHost = '//' + siteDomain;
+
+export const setSessionMb = () => {
+	onMount(() => {
+		const ssMb = sessionStorage.getItem('ssMb');
+		if (ssMb !== null) {
+			mb.set(JSON.parse(ssMb));
+			isLoggedIn.set(true);
+		} else {
+			mb.set(<Mb>{});
+			isLoggedIn.set(false);
+		}
+	})
+}
+
 export const logoutLimitedTime = 600; // 10분
 export const getLogout = (): void => {
 	if(!isLoggedIn) goto('/');
@@ -99,8 +115,15 @@ export const getItemPrice = async (itemName: string) => {
 		return getUsdtPrice();
 	else if (itemName === 'BNB')
 		return getBnbPrice();
-	const itemApiUrl = 'https://crix-api-endpoint.upbit.com/v1/crix/candles/days/?code=CRIX.UPBIT.KRW-' + itemName;
-	const response = await fetch(itemApiUrl);
-	const data = await response.json();
-	return data[0]['tradePrice'];
+	else if (itemName !== 'KRW') {
+		const itemApiUrl = 'https://crix-api-endpoint.upbit.com/v1/crix/candles/days/?code=CRIX.UPBIT.KRW-' + itemName;
+		const response = await fetch(itemApiUrl);
+		const data = await response.json();
+		return data[0]['tradePrice'];
+	}
 }
+
+export const getConfig = async () => {
+	const data = await accessApi('eetimes/getConfig');
+	return data;
+};

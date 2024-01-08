@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LoginBox from '$lib/components/LoginBox.svelte';
+	// import LoginBox from '$lib/components/LoginBox.svelte';
 </script>
 
-<LoginBox />
+<!-- <LoginBox /> -->

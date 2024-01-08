@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { isLoggedIn, mb } from '$lib/api/store';
+	import { isLoggedIn, mb, type Mb } from '$lib/api/store';
 	import { initializeStores, AppShell, AppBar, Toast } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
@@ -8,20 +8,25 @@
 	import LogoutTimer from '$lib/components/LogoutTimer.svelte';
 	import MenuBox from '$lib/components/menuBox.svelte';
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 	initializeStores();
 	onMount(() => {
-		if (
-			!$isLoggedIn &&
-			$page.route.id !== '/login' &&
-			$page.route.id !== '/guide' &&
-			$page.route.id !== '/guide/termsOfUse' &&
-			$page.route.id !== '/api'
-		)
-			goto('/login');
-		else if ($isLoggedIn && $page.route.id === '/login') goto('/');
+		const ssMb = sessionStorage.getItem('ssMb');
+		if (ssMb !== null) {
+			try {
+				const parsedMb = JSON.parse(ssMb);
+				mb.set(parsedMb);
+				isLoggedIn.set(true);
+			} catch (error) {
+				console.error('Invalid JSON:', ssMb);
+				mb.set(<Mb>{});
+				isLoggedIn.set(false);
+			}
+		} else {
+			mb.set(<Mb>{});
+			isLoggedIn.set(false);
+		}
 	});
 </script>
 
@@ -56,9 +61,7 @@
 			<div id="container-box">
 				<slot />
 			</div>
-			<!-- <br />
-			<br />
-			<pre>
+			<!-- <pre>
 				{JSON.stringify($page.route.id, null, 2)}
 				{JSON.stringify($mb, null, 2)}
 				{JSON.stringify($isLoggedIn, null, 2)}

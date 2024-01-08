@@ -1,11 +1,15 @@
 <script lang="ts">
-	import { addCommas, getCopyText } from '$lib/config';
+	import { addCommas, getCopyText, getConfig } from '$lib/config';
 	import IconXi from './IconXi.svelte';
 	import Button from './Button.svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { accessApi } from '$lib/api/access';
-	import { mb } from '$lib/api/store';
+	import { mb, writableConfig } from '$lib/api/store';
+	import { onMount } from 'svelte';
+	onMount(async () => {
+		writableConfig.set(await getConfig());
+	});
 	const toastStore = getToastStore();
 	export let itemInfo: any = {};
 	let itemName = itemInfo.it_name;
@@ -21,6 +25,7 @@
 	let showReqForm = false;
 	let reqAmount: number;
 	let amountRate: number;
+	let maxAmountRate: number;
 	let _reqAmount: number;
 	let _amountRate: number;
 	const getRate = () => {
@@ -48,13 +53,20 @@
 			else {
 				let n = Math.floor(reqAmount / 1_000_000);
 				amountRate = 4 + n * 0.1;
+				amountRate =
+					amountRate > Number($writableConfig.max_rate.split(',')[0])
+						? Number($writableConfig.max_rate.split(',')[0])
+						: amountRate;
 			}
 		} else {
-			///itemName === 'USDT' || itemName === 'NETELLER'
 			if (reqAmount >= 400 && reqAmount < 800) amountRate = 4.1;
 			else {
 				let n = Math.floor(reqAmount / 800);
 				amountRate = 4.1 + n * 0.1;
+				amountRate =
+					amountRate > Number($writableConfig.max_rate.split(',')[1])
+						? Number($writableConfig.max_rate.split(',')[1])
+						: amountRate;
 			}
 		}
 		_reqAmount = reqAmount;
@@ -94,7 +106,7 @@
 
 {#if itemPrice}
 	<div class="flex items-center mt-3 ps-4">
-		<string class="me-3 text-surface-300">{itemInfo._it_name}</string>
+		<string class="me-3 text-surface-300">{itemName}</string>
 		<IconXi iconName="won" addClass="me-1" /><span class="text-price"
 			>{addCommas(Math.floor(itemPrice * 100) / 100)}</span
 		>
@@ -129,12 +141,15 @@
 					<td>월수익(30일 기준)</td>
 				</tr>
 				<tr class="text-primary-300">
-					<td><strong>{addCommas(_reqAmount)} {itemName}</strong></td>
+					<td
+						><strong>{addCommas(_reqAmount)} {itemName === 'NETELLER' ? 'USDT' : itemName}</strong
+						></td
+					>
 					<td>
 						<strong>{Math.round(_amountRate * 10) / 10} %</strong>
 						<br /><span
 							>≒ {addCommas((_reqAmount * Math.round(_amountRate * 10)) / 10 / 100)}
-							{itemName}</span
+							{itemName === 'NETELLER' ? 'USDT' : itemName}</span
 						>
 					</td>
 				</tr>

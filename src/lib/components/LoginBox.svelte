@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { mb, isLoggedIn } from '$lib/api/store';
 	import { accessApi } from '$lib/api/access';
 	import { scale } from 'svelte/transition';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	const toastStore = getToastStore();
 	import Button from './Button.svelte';
-	import { goto } from '$app/navigation';
 	import { getEmailMatch } from '$lib/config';
 	import IconXi from './IconXi.svelte';
+	import { page } from '$app/stores';
+	let reId = $page.params.uid ? $page.params.uid : '';
 	let signId = '';
 	let mbPassword = '';
 	let mbPassword2 = '';
@@ -63,12 +63,14 @@
 				return false;
 			}
 			params = {
+				reId,
 				signId,
 				mbPassword,
 				mbPassword2,
 				isSignUp
 			};
 		} else {
+			//로그인
 			if (!(signId && mbPassword)) {
 				const t: ToastSettings = {
 					message: '입력하지 않은 회원정보가 있습니다.',
@@ -84,7 +86,6 @@
 		}
 		btnDisabledSetSign = showGsSetSign = true;
 		const data = await accessApi('auth/setSign', params);
-		// if (dev) console.log('data: ', data);
 		if (data.msg === 'exist_id') {
 			const t: ToastSettings = {
 				message: '이미 가입되어 있는 아이디입니다.',
@@ -118,9 +119,8 @@
 			toastStore.trigger(t);
 		}
 		btnDisabledSetSign = showGsSetSign = false;
-		mb.set(data.mb);
-		isLoggedIn.set(true);
-		goto('/');
+		sessionStorage.setItem('ssMb', JSON.stringify(data.mb));
+		location.href = '/';
 	};
 	let signEmail = '';
 	let sendPw = false;
@@ -133,7 +133,6 @@
 		};
 		btnDisabledFindPw = showGsFindPw = true;
 		const data = await accessApi('auth/findPw', params);
-		// if (dev) console.log('data: ', data);
 		if (data.msg === 'not_exist_email') {
 			const t: ToastSettings = {
 				message: '등록되지 않은 이메일입니다.',
@@ -198,8 +197,10 @@
 			{/if}
 			<div class="flex justify-between mt-4">
 				<label class="flex mt-2 space-x-2 items-bottom ms-2">
-					<input class="checkbox" type="checkbox" bind:checked={isSignUp} />
-					<p>회원가입</p>
+					{#if $page.route.id === '/u/[uid]'}
+						<input class="checkbox" type="checkbox" bind:checked={isSignUp} />
+						<p>회원가입</p>
+					{/if}
 				</label>
 				<Button addClass={btnClassAlt} btnType="submit" btnText={btnTextAlt} onClick={setSign} />
 			</div>
@@ -232,7 +233,6 @@
 				</form>
 			</div>
 		{/if}
-
 		<div id="prvBox">
 			<h1>11Times.com</h1>
 			<div class="mt-3 text-surface-400">

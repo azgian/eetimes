@@ -7,6 +7,7 @@
 		{ slug: 'home', name: 'Home', icon: 'home', lv: 2 },
 		// { slug: 'news', name: 'News', icon: 'paper-o', lv: 2 },
 		{ slug: 'staking', name: 'Staking', icon: 'server', lv: 2 },
+		{ slug: 'reward', name: 'Reward', icon: 'wallet', lv: 2 },
 		{ slug: 'myInfo', name: 'MyInfo', icon: 'user-o', lv: 2 },
 		{ slug: 'sys', name: 'Sys', icon: 'cog', lv: sys7Lv }
 	];

@@ -32,14 +32,6 @@
 				</div>
 			{/if}
 			<div class="text-center infoBox grow">
-				<span class="text-primary-300"
-					>{itemInfo.it_rate ? itemInfo.it_rate * 1 : ''}<small>%</small></span
-				>
-				<span class="total text-primary-300">
-					({itemInfo.it_rate && itemInfo.it_period
-						? Math.floor(itemInfo.it_rate * itemInfo.it_period * 100) / 100
-						: ''}<small>%</small>)
-				</span>
 				<span class="text-success-300"
 					>{itemInfo.it_period ? itemInfo.it_period : ''}<small>일</small></span
 				>

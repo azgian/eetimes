@@ -6,15 +6,24 @@
 	import Button from '$lib/components/Button.svelte';
 	import { scale } from 'svelte/transition';
 	import { accessApi, resetMb } from '$lib/api/access';
-	import { getEmailMatch } from '$lib/config';
+	import { getCopyText, getEmailMatch } from '$lib/config';
 	import ItemBox from './ItemBox.svelte';
-	let mbName = $mb ? $mb.mb_name : '';
-	let mbHp = $mb ? $mb.mb_hp : '';
-	let mbEmail = $mb ? $mb.mb_email : '';
-	const bankInfo = $mb.mb_bank.split(' ') || ['', '', ''];
+	let mbName = '';
+	let mbHp = '';
+	let mbEmail = '';
+	let bankInfo = ['', '', ''];
 	let mbBank0 = bankInfo[0];
 	let mbBank1 = bankInfo[1];
 	let mbBank2 = bankInfo[2];
+	$: if ($mb) {
+		mbName = $mb.mb_name;
+		mbHp = $mb.mb_hp;
+		mbEmail = $mb.mb_email;
+		bankInfo = $mb.mb_bank ? $mb.mb_bank.split(' ') : ['', '', ''];
+		mbBank0 = bankInfo[0];
+		mbBank1 = bankInfo[1];
+		mbBank2 = bankInfo[2];
+	}
 	let mbPassword = '';
 	const setMbInfo = async (fld: keyof Mb, val: any) => {
 		if (!val) {
@@ -30,10 +39,7 @@
 			fld,
 			val
 		};
-		// console.log('setMbInfo params: ', params);
-		// return false;
 		const data = await accessApi('member/setMbInfo', params);
-		// if (dev) console.log('D data: ', data);
 		if (data.msg === 'exist_email') {
 			const t = {
 				message: '이미 등록된 이메일입니다.',
@@ -53,6 +59,15 @@
 		if (fld === 'mb_password') {
 			mbPassword = '';
 		}
+	};
+	const signUpUrl = 'https://11times.com/u/' + $mb.uid.substring(1);
+	const setCopyLink = () => {
+		getCopyText(signUpUrl);
+		const t: ToastSettings = {
+			message: '추천링크가 복사되었습니다.',
+			timeout: 3000
+		};
+		toastStore.trigger(t);
 	};
 </script>
 
@@ -147,14 +162,19 @@
 			</div>
 		</label>
 	</form>
-
 	<ItemBox itemName="USDT" itemLogo="coin_usdt" />
+	<div class="mt-8 flex justify-center">
+		<Button
+			btnType="button"
+			addClass="variant-filled-secondary"
+			iconNameS="files"
+			btnText="추천링크 복사"
+			onClick={setCopyLink}
+		/>
+	</div>
 </div>
 
 <style>
-	h3 {
-		font-size: 1.25rem;
-	}
 	input {
 		text-align: center;
 	}

@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { accessApi } from '$lib/api/access';
 	import { searchMbList } from '$lib/api/store';
+	export let reId = '';
 	let searchMbName = '';
 	const searchMb = async () => {
 		const params = {
-			searchMbName
+			searchMbName,
+			reId
 		};
 		const data = await accessApi('member/getMbsList', params);
 		searchMbList.set(data);
